@@ -2,6 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
 import { Task } from '../model/task';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ export class HomePage {
     public alertCtrl: AlertController,
     private camera: Camera,
     private zone: NgZone,
+    private sanitizer: DomSanitizer,
   ) {}
 
   addTask() {
@@ -59,16 +61,20 @@ export class HomePage {
   updatePhoto(index) {
     const options: CameraOptions = {
       quality: 100,
+      targetWidth: 600, 
+      sourceType: this.camera.PictureSourceType.CAMERA,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
 
+    console.log(index);
     this.camera.getPicture(options).then((imageData) => {
-      this.tasksToDo[index].picture = 'data:image/jpeg;base64,' + imageData;
-      this.picture = 'data:image/jpeg;base64,' + imageData;
+      const imageUrl: any = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64,' + imageData);
+      console.log('ImageUrl is - ' + imageUrl);
+      this.tasksToDo[index].picture = imageUrl;
       this.tasksToDo = [...this.tasksToDo];
-      this.picture = this.tasksToDo[index].picture ;
+      this.picture = imageUrl ;
     }, (err) => {
      // Handle error
      console.log('Camera issue:' + err);
