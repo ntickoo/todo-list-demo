@@ -14,7 +14,7 @@ export class HomePage {
 
   tasksToDo: Task[] = [];
 
-  picture: any;
+  //picture: any;
 
   taskName: string;
 
@@ -73,8 +73,6 @@ export class HomePage {
       const imageUrl: any = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64,' + imageData);
       console.log('ImageUrl is - ' + imageUrl);
       this.tasksToDo[index].picture = imageUrl;
-      this.tasksToDo = [...this.tasksToDo];
-      this.picture = imageUrl ;
     }, (err) => {
      // Handle error
      console.log('Camera issue:' + err);
